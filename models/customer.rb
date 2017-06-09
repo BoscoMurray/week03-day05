@@ -1,4 +1,4 @@
-require_relative('../db/sql_runner.rb')
+require_relative('../db/sql_runner')
 
 class Customer
 
@@ -16,9 +16,29 @@ class Customer
     @id = SqlRunner.run(sql)[0]['id'].to_i
   end
 
+  def update
+    sql = "UPDATE customers
+      SET (name, monero) = ('#{@name}', '#{@monero}')
+      WHERE id = #{@id}"
+    SqlRunner.run(sql)
+  end
+
+  def films
+    sql = "SELECT films.* FROM films
+      INNER JOIN tickets
+      ON films.id = tickets.film_id
+      WHERE tickets.customer_id = #{@id}"
+    return Film.map_items(sql)
+  end
+
   def self.all
     sql = "SELECT * FROM customers"
     return Customer.map_items(sql)
+  end
+
+  def self.delete_all
+    sql = "DELETE FROM customers"
+    SqlRunner.run(sql)
   end
 
   def self.map_items(sql)
