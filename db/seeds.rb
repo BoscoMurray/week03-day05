@@ -13,16 +13,25 @@ customer1.save
 customer2 = Customer.new({"name" => "Ross", "monero" => "100"})
 customer2.save
 
-film1 = Film.new({"title" => "Donnie Darko"})
+film1 = Film.new({"title" => "Donnie Darko", "price" => "10"})
 film1.save
-film2 = Film.new({"title" => "The Goonies"})
+film2 = Film.new({"title" => "The Goonies", "price" => "6"})
 film2.save
 
-ticket1 = Ticket.new({"film_id" => film1.id, "customer_id" => customer1.id})
+ticket1 = Ticket.new({
+  "film" => film1,
+  "customer" => customer1
+  })
 ticket1.save
-ticket2 = Ticket.new({"film_id" => film1.id, "customer_id" => customer2.id})
+ticket2 = Ticket.new({
+  "film" => film1,
+  "customer" => customer2
+  })
 ticket2.save
-ticket3 = Ticket.new({"film_id" => film2.id, "customer_id" => customer2.id})
+ticket3 = Ticket.new({
+  "film" => film2,
+  "customer" => customer2
+  })
 ticket3.save
 
 binding.pry

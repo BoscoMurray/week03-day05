@@ -12,11 +12,13 @@ class Customer
   end
 
   def save
-    sql = "INSERT INTO customers (name, monero) VALUES ('#{@name}', '#{@monero}') RETURNING id"
+    sql = "INSERT INTO customers (name, monero)
+      VALUES ('#{@name}', '#{@monero}')
+      RETURNING id"
     @id = SqlRunner.run(sql)[0]['id'].to_i
   end
 
-  def update
+  def update_db
     sql = "UPDATE customers
       SET (name, monero) = ('#{@name}', '#{@monero}')
       WHERE id = #{@id}"
@@ -29,6 +31,27 @@ class Customer
       ON films.id = tickets.film_id
       WHERE tickets.customer_id = #{@id}"
     return Film.map_items(sql)
+  end
+
+  def customer_has_enough_funds(value)
+    return @monero >= value
+  end
+
+  def get_funds
+    sql = "SELECT monero FROM customers
+      WHERE id = #{@id}"
+    @monero = SqlRunner.run(sql)[0]["monero"].to_i
+    return @monero
+  end
+
+  def deduct_funds(value)
+    @monero = @monero - value
+  end
+
+  def tickets
+    sql = "SELECT * FROM tickets
+      WHERE customer_id = #{@id}"
+    return SqlRunner.run(sql).count
   end
 
   def self.all
