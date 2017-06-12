@@ -8,7 +8,7 @@ class Film
   def initialize(options)
     @id = options['id'].to_i if options['id']
     @title = options['title']
-    @price = options['price'].to_i
+    @price = options['price'].to_i if options['price']
   end
 
   def save
@@ -29,14 +29,23 @@ class Film
     sql = "SELECT customers.* FROM customers
       INNER JOIN tickets
       ON customers.id = tickets.customer_id
-      WHERE tickets.film_id = #{@id}"
+      INNER JOIN screenings
+      ON screenings.film_id = #{@id}"
     return Customer.map_items(sql)
   end
 
   def customer_count
-    sql = "SELECT * FROM tickets
-      WHERE film_id = #{@id}"
-    return SqlRunner.run(sql).count
+    return customers.count
+  end
+
+  def screenings
+    sql = "SELECT screenings.* FROM screenings
+      INNER JOIN films
+      ON screenings.film_id = #{@id}"
+    return SqlRunner.run(sql)
+    # return Screening.map_items(sql)
+    # screenings = SqlRunner.run(sql)
+    # return screenings.map { |screening| Screening.new(screening) }
   end
 
   def self.all
