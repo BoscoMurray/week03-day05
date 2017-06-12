@@ -40,12 +40,8 @@ class Film
 
   def screenings
     sql = "SELECT screenings.* FROM screenings
-      INNER JOIN films
-      ON screenings.film_id = #{@id}"
-    return SqlRunner.run(sql)
-    # return Screening.map_items(sql)
-    # screenings = SqlRunner.run(sql)
-    # return screenings.map { |screening| Screening.new(screening) }
+      WHERE film_id = #{@id}"
+    return Screening.map_items(sql)
   end
 
   def self.all

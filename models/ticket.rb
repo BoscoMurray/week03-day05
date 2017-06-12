@@ -12,16 +12,17 @@ class Ticket
   end
 
   def save
-    # if customer.get_funds >= screening.price
+    cust = customer
+    if cust.get_funds >= @price
       sql = "INSERT INTO tickets (screening_id, customer_id, price)
         VALUES ('#{@screening_id}', '#{@customer_id}', #{@price})
         RETURNING id"
       @id = SqlRunner.run(sql)[0]['id'].to_i
-      customer.deduct_funds(@price)
-      customer.update_db
-    # else
-    #   return "Customer does not have enough funds."
-    # end
+      cust.deduct_funds(@price)
+      cust.update_db
+    else
+      return "Customer does not have enough funds."
+    end
   end
 
   # def film
